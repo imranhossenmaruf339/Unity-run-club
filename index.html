@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity Run Club | Run For Bangladesh</title>
+<meta name="description" content="Unity Run Club — the premier running community in Bangladesh for marathons, community runs and fitness events. Run For Bangladesh.">
+<meta property="og:title" content="Unity Run Club | Run For Bangladesh">
+<meta property="og:image" content="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?q=80&w=1470">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="nav-root"></div>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?q=80&w=1470&auto=format&fit=crop" alt="Runners at sunrise in Bangladesh">
+    </div>
+    <div class="hero-content">
+      <div class="km hero-eyebrow" style="color:#ffd9b0;">Unity Run Club &nbsp;·&nbsp; Dhaka, Bangladesh</div>
+      <h1><span>RUN TOGETHER.</span><span>RUN FOR BANGLADESH. 🇧🇩</span></h1>
+      <p class="lead">Building a stronger, healthier Bangladesh — one kilometer at a time.</p>
+      <div class="hero-actions">
+        <a href="suggest-event.html" class="btn btn-primary">Join The Club</a>
+        <a href="events.html" class="btn btn-outline">Upcoming Events</a>
+      </div>
+    </div>
+    <div class="scroll-indicator" aria-hidden="true"><span>Scroll</span><span class="line"></span></div>
+  </section>
+
+  <!-- FEATURED EVENT (only renders if an admin has marked one featured) -->
+  <section id="featured-wrap" class="container" style="display:none;">
+    <div class="km">The Big Run</div>
+    <div id="featured-slot"></div>
+  </section>
+
+  <!-- UPCOMING EVENTS -->
+  <section id="events">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="km">Km 01 — What's Next</div>
+        <h2>Upcoming Events</h2>
+      </div>
+      <div id="events-preview" class="grid grid-3 stagger"></div>
+      <div class="reveal" style="margin-top:2.2em; text-align:center;">
+        <a href="events.html" class="btn btn-dark">View All Events</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / MISSION -->
+  <section id="about" class="bg-dark">
+    <div class="container grid grid-2" style="align-items:start; gap:60px;">
+      <div class="reveal">
+        <div class="km">Km 02 — Our Mission</div>
+        <h2>Why We Run</h2>
+        <ul style="list-style:none; padding:0; margin:0; display:grid; gap:.9em;">
+          <li>To inspire people to begin their running journey</li>
+          <li>To organize meaningful, well-planned running events</li>
+          <li>To create a supportive community for beginners and athletes</li>
+          <li>To promote fitness awareness in schools, universities and workplaces</li>
+          <li>To contribute to a healthier society through movement and education</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <div class="km">Founders' Message</div>
+        <p>Unity Run Club was born from a simple belief — that running can change lives. It strengthens the body, builds confidence, and develops discipline while bringing people together under one positive spirit.</p>
+        <p>We are at the beginning of our journey. Although we have not yet organized major events, we carry a powerful dream: to make running a popular and life-changing movement across Bangladesh — a place where new runners find encouragement, young people grow passionate about fitness, and individuals embrace healthier lifestyles.</p>
+        <p>Our slogan, <em>"Run For Bangladesh,"</em> is more than words — it is a commitment to build a healthier nation and a stronger generation.</p>
+        <p style="opacity:.85;">— Team Unity Run Club</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY UNITY RUN CLUB -->
+  <section>
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="km">Km 03 — What Sets Us Apart</div>
+        <h2>Why Unity Run Club</h2>
+      </div>
+      <div class="grid grid-3 stagger">
+        <div class="feature-card reveal">
+          <div class="icon">◎</div>
+          <h4>For Everyone</h4>
+          <p>Running should be accessible to everyone, regardless of pace or experience.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="icon">◈</div>
+          <h4>Community First</h4>
+          <p>Run together and grow together — every session is a shared one.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="icon">🇧🇩</div>
+          <h4>Run For Bangladesh</h4>
+          <p>Promoting a healthier, more active Bangladesh, one street at a time.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="icon">↗</div>
+          <h4>Train &amp; Improve</h4>
+          <p>Helping runners become better through community and structured training.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY STATS -->
+  <section class="bg-dark" id="community">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="km">Km 04 — Our Community</div>
+        <h2>Growing Together</h2>
+      </div>
+      <div id="stats-slot" class="grid grid-3 stagger"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="km">Km 05 — Gallery</div>
+        <h2>Moments From The Movement</h2>
+      </div>
+      <div class="grid grid-3 stagger" id="gallery-grid">
+        <a class="reveal" data-lightbox href="https://images.unsplash.com/photo-1768502927730-adcf8a8c7918?q=80&w=1287" style="border-radius:14px;overflow:hidden;display:block;"><img src="https://images.unsplash.com/photo-1768502927730-adcf8a8c7918?q=80&w=800" alt="Unity Run Club community photo" loading="lazy" style="aspect-ratio:4/3;object-fit:cover;transition:transform .5s;"></a>
+        <a class="reveal" data-lightbox href="https://images.unsplash.com/photo-1768502861824-8b327b01ef87?q=80&w=1335" style="border-radius:14px;overflow:hidden;display:block;"><img src="https://images.unsplash.com/photo-1768502861824-8b327b01ef87?q=80&w=800" alt="Unity Run Club community photo" loading="lazy" style="aspect-ratio:4/3;object-fit:cover;transition:transform .5s;"></a>
+        <a class="reveal" data-lightbox href="https://images.unsplash.com/photo-1768502861861-c6fa361a262b?q=80&w=1335" style="border-radius:14px;overflow:hidden;display:block;"><img src="https://images.unsplash.com/photo-1768502861861-c6fa361a262b?q=80&w=800" alt="Unity Run Club community photo" loading="lazy" style="aspect-ratio:4/3;object-fit:cover;transition:transform .5s;"></a>
+      </div>
+      <p style="margin-top:1.4em; color:var(--muted); font-size:.9rem;">More photos are added by the admin team after every event.</p>
+    </div>
+  </section>
+
+  <!-- TEAM (renders only when admin adds real people) -->
+  <section id="team-wrap" style="display:none;">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="km">Km 06 — The People</div>
+        <h2>Meet The Team</h2>
+      </div>
+      <div id="team-slot" class="grid grid-3 stagger"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="bg-dark">
+    <div class="container grid grid-2" style="gap:60px;">
+      <div class="reveal">
+        <div class="km">Km 07 — Get In Touch</div>
+        <h2>Follow The Movement</h2>
+        <p style="max-width:42ch;">Questions, partnerships, or just want to say hello before your first run with us? Reach out any time.</p>
+        <p><strong>Email:</strong> <a href="mailto:unityrunclub.urc@gmail.com">unityrunclub.urc@gmail.com</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+8801781674070">+880 1781 674070</a></p>
+        <div class="social-row">
+          <a href="https://www.facebook.com/profile.php?id=61581447125067" target="_blank" rel="noopener" aria-label="Facebook Page">f</a>
+          <a href="https://facebook.com/groups/2349305025494610/" target="_blank" rel="noopener" aria-label="Facebook Group">g</a>
+        </div>
+      </div>
+      <form class="form-card reveal" id="contact-form" style="background:#fff; color:var(--ink);">
+        <div id="contact-msg"></div>
+        <div class="field"><label for="c-name">Name</label><input id="c-name" required></div>
+        <div class="field"><label for="c-email">Email</label><input id="c-email" type="email" required></div>
+        <div class="field"><label for="c-msg">Message</label><textarea id="c-msg" required></textarea></div>
+        <button class="btn btn-primary" type="submit" style="width:100%;">Send Message</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+renderNav('home');
+renderFooter();
+
+async function loadHome(){
+  // Upcoming events preview (max 3)
+  const events = (await UnityData.publishedEvents({ upcomingOnly: true })).slice(0,3);
+  const wrap = document.getElementById('events-preview');
+  if (!events.length){
+    wrap.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <h3>No upcoming events yet</h3>
+      <p>We're planning our first official run. Want to see something on the calendar?</p>
+      <a href="suggest-event.html" class="btn btn-dark">Suggest an Event</a>
+    </div>`;
+  } else {
+    wrap.innerHTML = events.map(ev => eventCardHTML(ev)).join('');
+  }
+
+  // Featured event
+  const featured = await UnityData.featuredEvent();
+  if (featured){
+    document.getElementById('featured-wrap').style.display = 'block';
+    document.getElementById('featured-slot').innerHTML = `
+      <div class="featured reveal">
+        <img src="${featured.cover_image || 'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1200'}" alt="${featured.title}">
+        <div class="featured-content">
+          <h2 style="font-size:2.6rem;">${featured.title}</h2>
+          <p>${new Date(featured.event_date).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'})} · ${featured.location || ''} · ${featured.distance || ''}</p>
+          <p>${featured.description ? featured.description.slice(0,140) : ''}</p>
+          <div class="countdown" id="cd"><div><div class="num" id="cd-d">--</div><div class="lbl">Days</div></div><div><div class="num" id="cd-h">--</div><div class="lbl">Hrs</div></div><div><div class="num" id="cd-m">--</div><div class="lbl">Min</div></div><div><div class="num" id="cd-s">--</div><div class="lbl">Sec</div></div></div>
+          <a href="events/event.html?slug=${featured.slug}" class="btn btn-primary">Register Now</a>
+        </div>
+      </div>`;
+    startCountdown(featured.event_date, { wrap: document.getElementById('cd'), d: document.getElementById('cd-d'), h: document.getElementById('cd-h'), m: document.getElementById('cd-m'), s: document.getElementById('cd-s') });
+  }
+
+  // Community stats — only show if admin has entered real numbers
+  const stats = await UnityData.communityStats();
+  if (stats.length){
+    document.getElementById('stats-slot').innerHTML = stats.map(s => `
+      <div class="stat reveal"><div class="n" data-value="${s.value}">0</div><div class="l">${s.label}</div></div>
+    `).join('');
+    initCounters();
+  } else {
+    document.getElementById('stats-slot').innerHTML = `<div class="reveal" style="grid-column:1/-1; text-align:center; color:#cfe0d6;">We're just getting started — our first community numbers will show up here as events happen.</div>`;
+  }
+
+  // Team — only show section if real members exist
+  const team = await UnityData.team();
+  if (team.length){
+    document.getElementById('team-wrap').style.display = 'block';
+    document.getElementById('team-slot').innerHTML = team.map(t => `
+      <div class="team-card reveal">
+        <img src="${t.photo || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=400'}" alt="${t.name}">
+        <h4>${t.name}</h4>
+        <div class="pos">${t.position || ''}</div>
+      </div>`).join('');
+  }
+
+  initReveal();
+}
+
+function eventCardHTML(ev){
+  return `
+  <div class="event-card reveal">
+    <div class="thumb">
+      <img src="${ev.cover_image || 'https://images.unsplash.com/photo-1502904550040-7534597429ae?q=80&w=800'}" alt="${ev.title}" loading="lazy">
+      <span class="badge">${ev.category || 'Run'}</span>
+    </div>
+    <div class="body">
+      <h3>${ev.title}</h3>
+      <div class="meta-row">
+        <span>📅 ${new Date(ev.event_date).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}</span>
+        <span>📍 ${ev.location || 'TBA'}</span>
+        <span>🏁 ${ev.distance || ''}</span>
+      </div>
+      <div class="card-actions">
+        <a class="btn btn-outline" style="color:var(--ink); border-color:var(--line);" href="events/event.html?slug=${ev.slug}">View Event</a>
+        <a class="btn btn-primary" href="${ev.registration_url || ('events/event.html?slug='+ev.slug)}" target="_blank" rel="noopener">Register</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msgBox = document.getElementById('contact-msg');
+  msgBox.innerHTML = `<div class="form-msg ok">Thanks — this demo form isn't wired to email yet. Reach us directly at unityrunclub.urc@gmail.com.</div>`;
+  e.target.reset();
+});
+
+loadHome();
+</script>
+</body>
+</html>

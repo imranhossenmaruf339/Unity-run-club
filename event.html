@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Event | Unity Run Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="nav-root"></div>
+
+<main id="main">
+  <div id="event-root">
+    <div class="container" style="padding-top:140px; padding-bottom:80px;">
+      <p>Loading event…</p>
+    </div>
+  </div>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/config.js"></script>
+<script src="../assets/data.js"></script>
+<script src="../assets/app.js"></script>
+<script>
+// app.js builds nav links relative to root pages; patch hrefs for this nested page.
+function renderNavNested(){
+  renderNav('events');
+  document.querySelectorAll('#nav-root a, #mobile-menu a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && !href.startsWith('http') && !href.startsWith('#')) a.setAttribute('href', '../' + href);
+  });
+}
+renderNavNested();
+renderFooter();
+document.querySelectorAll('#footer-root a').forEach(a => {
+  const href = a.getAttribute('href');
+  if (href && !href.startsWith('http') && !href.startsWith('mailto') && !href.startsWith('tel')) a.setAttribute('href', '../' + href);
+});
+
+const slug = new URLSearchParams(location.search).get('slug');
+const root = document.getElementById('event-root');
+
+async function load(){
+  if (!slug){ root.innerHTML = notFound(); return; }
+  const ev = await UnityData.eventBySlug(slug);
+  if (!ev || ev.status !== 'published'){ root.innerHTML = notFound(); return; }
+
+  document.getElementById('page-title').textContent = ev.title + ' | Unity Run Club';
+  const today = new Date().toISOString().slice(0,10);
+  const isUpcoming = ev.event_date >= today;
+  const deadlinePassed = ev.registration_deadline && ev.registration_deadline < today;
+
+  root.innerHTML = `
+    <section class="hero" style="min-height:60vh;">
+      <div class="hero-bg"><img src="${ev.cover_image || 'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1200'}" alt="${ev.title}"></div>
+      <div class="hero-content" style="padding-bottom:60px;">
+        <div class="km" style="color:#ffd9b0;">${ev.category || 'Run'} ${!isUpcoming ? ' · Completed' : ''}</div>
+        <h1 style="font-size:clamp(2rem,6vw,4rem);">${ev.title}</h1>
+        <p class="lead">${new Date(ev.event_date).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'})} · ${ev.location || 'TBA'} · ${ev.distance || ''}</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container grid grid-2" style="gap:56px; align-items:start;">
+        <div>
+          <div class="reveal in">
+            <h2 style="font-size:1.6rem;">About The Event</h2>
+            <p>${ev.description ? ev.description.replace(/\n/g,'<br>') : 'Details will be added soon.'}</p>
+          </div>
+
+          ${ev.route_map_url ? `<div class="reveal in" style="margin-top:2em;"><h2 style="font-size:1.6rem;">Route</h2><a href="${ev.route_map_url}" target="_blank" rel="noopener" class="btn btn-outline" style="color:var(--ink); border-color:var(--line);">View Route Map</a></div>` : ''}
+
+          ${ev.schedule && ev.schedule.length ? `<div class="reveal in" style="margin-top:2em;">
+            <h2 style="font-size:1.6rem;">Schedule</h2>
+            <div style="display:grid; gap:10px;">
+              ${ev.schedule.map(s => `<div style="display:flex; gap:16px; padding:12px 0; border-bottom:1px solid var(--line);"><strong style="min-width:90px;">${s.time}</strong><span>${s.label}</span></div>`).join('')}
+            </div>
+          </div>` : ''}
+
+          ${ev.benefits && ev.benefits.length ? `<div class="reveal in" style="margin-top:2em;">
+            <h2 style="font-size:1.6rem;">What Participants Get</h2>
+            <ul>${ev.benefits.map(b => `<li>${b}</li>`).join('')}</ul>
+          </div>` : ''}
+
+          ${ev.faq && ev.faq.length ? `<div class="reveal in" style="margin-top:2em;">
+            <h2 style="font-size:1.6rem;">FAQ</h2>
+            <div style="display:grid; gap:14px;">
+              ${ev.faq.map(f => `<div><strong>${f.q}</strong><p style="margin:.3em 0 0;">${f.a}</p></div>`).join('')}
+            </div>
+          </div>` : ''}
+
+          ${!isUpcoming && ev.photos && ev.photos.length ? `<div class="reveal in" style="margin-top:2em;">
+            <h2 style="font-size:1.6rem;">Photos</h2>
+            <div class="grid grid-3">${ev.photos.map(p => `<img src="${p}" loading="lazy" style="border-radius:10px; aspect-ratio:4/3; object-fit:cover;">`).join('')}</div>
+          </div>` : ''}
+        </div>
+
+        <aside class="form-card reveal in" style="position:sticky; top:110px;">
+          <h3 style="font-size:1.2rem;">Event Information</h3>
+          <div style="display:grid; gap:10px; font-size:.92rem; margin-bottom:1.4em;">
+            <div>📅 ${new Date(ev.event_date).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'})}${ev.event_time ? ' · ' + ev.event_time : ''}</div>
+            <div>📍 ${ev.location || 'TBA'}</div>
+            <div>🏁 ${ev.distance || 'TBA'}</div>
+            ${ev.registration_deadline ? `<div>⏰ Register by ${new Date(ev.registration_deadline).toLocaleDateString(undefined,{day:'numeric',month:'long'})}</div>` : ''}
+            <div>Status: <span class="status-pill ${deadlinePassed || !isUpcoming ? 'status-archived' : 'status-published'}">${!isUpcoming ? 'Completed' : (deadlinePassed ? 'Registration Closed' : 'Registration Open')}</span></div>
+            ${ev.participants_count ? `<div>👥 ${ev.participants_count} runners joined</div>` : ''}
+          </div>
+          ${isUpcoming && !deadlinePassed ? `<a href="${ev.registration_url || '#'}" target="_blank" rel="noopener" class="btn btn-primary" style="width:100%;">Register Now</a>` :
+            (!isUpcoming ? `<div class="form-msg ok">Event Completed</div>` : `<button class="btn" disabled style="width:100%;">Registration Closed</button>`)}
+        </aside>
+      </div>
+    </section>
+  `;
+  initReveal();
+}
+
+function notFound(){
+  return `<div class="container" style="padding-top:140px; padding-bottom:100px; text-align:center;">
+    <h1>Event Not Found</h1>
+    <p>This event may have been unpublished or the link is incorrect.</p>
+    <a href="../events.html" class="btn btn-dark">Back to Events</a>
+  </div>`;
+}
+
+load();
+</script>
+</body>
+</html>

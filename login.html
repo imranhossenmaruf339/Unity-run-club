@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Unity Run Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body style="background:var(--green-dark); min-height:100vh; display:flex; align-items:center;">
+<div class="container" style="max-width:420px;">
+  <div class="form-card" style="background:#fff;">
+    <div class="brand" style="justify-content:center; margin-bottom:1.2em;"><span class="dot"></span> UNITY RUN CLUB</div>
+    <h1 style="text-align:center; font-size:1.6rem;">Admin Sign In</h1>
+    <div id="tabs" style="display:flex; gap:8px; margin-bottom:1.4em;">
+      <button class="chip active" data-tab="signin" style="flex:1;">Sign In</button>
+      <button class="chip" data-tab="signup" style="flex:1;">Create Account</button>
+    </div>
+    <div id="msg"></div>
+    <form id="auth-form">
+      <div class="field" id="name-field" style="display:none;"><label for="a-name">Name</label><input id="a-name"></div>
+      <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" required></div>
+      <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" required minlength="6"></div>
+      <button class="btn btn-primary" type="submit" style="width:100%;" id="submit-btn">Sign In</button>
+    </form>
+    <p style="font-size:.8rem; color:var(--muted); margin-top:1.4em;">New accounts are created with the regular "user" role. An existing admin must promote your account to "admin" (see <code>supabase-schema.sql</code>) before you can access the dashboard.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/config.js"></script>
+<script src="../assets/data.js"></script>
+<script>
+let mode = 'signin';
+const msg = document.getElementById('msg');
+const nameField = document.getElementById('name-field');
+const submitBtn = document.getElementById('submit-btn');
+
+document.querySelectorAll('#tabs .chip').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#tabs .chip').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    mode = tab.dataset.tab;
+    nameField.style.display = mode === 'signup' ? 'block' : 'none';
+    submitBtn.textContent = mode === 'signup' ? 'Create Account' : 'Sign In';
+    msg.innerHTML = '';
+  });
+});
+
+document.getElementById('auth-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('a-email').value;
+  const password = document.getElementById('a-pass').value;
+  submitBtn.disabled = true;
+  try {
+    if (mode === 'signup') {
+      const name = document.getElementById('a-name').value;
+      const { error } = await UnityData.client.auth.signUp({ email, password, options: { data: { name } } });
+      if (error) throw error;
+      msg.innerHTML = `<div class="form-msg ok">Account created. If email confirmation is enabled on your Supabase project, check your inbox, then sign in.</div>`;
+    } else {
+      const { data, error } = await UnityData.client.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      const profile = await UnityData.getProfile(data.user.id);
+      if (profile?.role === 'admin') {
+        location.href = 'index.html';
+      } else {
+        msg.innerHTML = `<div class="form-msg err">Signed in, but this account is not an admin yet.</div>`;
+      }
+    }
+  } catch (err) {
+    msg.innerHTML = `<div class="form-msg err">${err.message || 'Something went wrong.'}</div>`;
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

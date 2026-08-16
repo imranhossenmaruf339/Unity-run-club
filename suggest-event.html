@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suggest an Event | Unity Run Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="nav-root"></div>
+
+<main id="main" style="padding-top:120px; padding-bottom:80px;">
+  <div class="container" style="max-width:760px;">
+    <div class="section-head reveal in">
+      <div class="km">Get Involved</div>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.2rem);">Suggest an Event</h1>
+      <p style="color:var(--muted);">Have an idea for a run? Tell us about it. Every submission is reviewed by our team before anything goes live — nothing is published automatically.</p>
+    </div>
+
+    <form class="form-card reveal in" id="req-form">
+      <div id="req-msg"></div>
+      <div class="form-grid">
+        <div class="field"><label for="f-name">Full Name *</label><input id="f-name" required></div>
+        <div class="field"><label for="f-email">Email *</label><input id="f-email" type="email" required></div>
+        <div class="field"><label for="f-phone">Phone (optional)</label><input id="f-phone"></div>
+        <div class="field"><label for="f-org">Organizer / Club (optional)</label><input id="f-org"></div>
+        <div class="field"><label for="f-event">Proposed Event Name *</label><input id="f-event" required></div>
+        <div class="field"><label for="f-date">Proposed Date *</label><input id="f-date" type="date" required></div>
+        <div class="field"><label for="f-location">Location *</label><input id="f-location" required></div>
+        <div class="field"><label for="f-distance">Distance *</label>
+          <select id="f-distance" required>
+            <option value="">Select…</option>
+            <option>5K</option><option>10K</option><option>Marathon</option>
+            <option>Community Run</option><option>Charity Run</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1;"><label for="f-desc">Event Description *</label><textarea id="f-desc" required></textarea></div>
+        <div class="field"><label for="f-social">Social Media Link (optional)</label><input id="f-social" placeholder="https://"></div>
+        <div class="field"><label for="f-image">Cover Image (optional)</label><input id="f-image" type="file" accept="image/*"></div>
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%; margin-top:.6em;">Submit Event Request</button>
+    </form>
+  </div>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+renderNav('events');
+renderFooter();
+
+const form = document.getElementById('req-form');
+const msg = document.getElementById('req-msg');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector('button');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try {
+    let imageUrl = null;
+    const file = document.getElementById('f-image').files[0];
+    if (file) imageUrl = await UnityData.uploadImage(file, 'requests');
+
+    const { error } = await UnityData.submitEventRequest({
+      name: document.getElementById('f-name').value,
+      email: document.getElementById('f-email').value,
+      phone: document.getElementById('f-phone').value || null,
+      organizer: document.getElementById('f-org').value || null,
+      event_name: document.getElementById('f-event').value,
+      proposed_date: document.getElementById('f-date').value,
+      location: document.getElementById('f-location').value,
+      distance: document.getElementById('f-distance').value,
+      description: document.getElementById('f-desc').value,
+      social_link: document.getElementById('f-social').value || null,
+      image: imageUrl,
+      status: 'pending',
+    });
+    if (error) throw error;
+    msg.innerHTML = `<div class="form-msg ok">Thanks! Your event request has been submitted for review. We'll be in touch by email.</div>`;
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    msg.innerHTML = `<div class="form-msg err">Something went wrong submitting your request. Please try again or email unityrunclub.urc@gmail.com.</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Submit Event Request';
+  }
+});
+</script>
+</body>
+</html>

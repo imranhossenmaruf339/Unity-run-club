@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Requests | Unity Run Club Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="admin-shell">
+  <div id="admin-sidebar-root"></div>
+  <main class="admin-main">
+    <h1 style="font-size:2rem; margin-bottom:1.6em;">Event Requests</h1>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Requester</th><th>Event Name</th><th>Proposed Date</th><th>Location</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop" style="display:none;">
+  <div class="modal">
+    <h2 style="font-size:1.3rem;" id="modal-title">Request</h2>
+    <div id="req-detail" style="font-size:.92rem; margin-bottom:1.2em;"></div>
+    <div class="field"><label>Note (visible to requester if you Reject or Request Changes)</label><textarea id="req-note"></textarea></div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn btn-primary" id="approve-btn">Approve</button>
+      <button class="btn btn-outline" style="color:var(--ink); border-color:var(--line);" id="changes-btn">Request Changes</button>
+      <button class="btn" style="background:#fde3e3; color:#a1121f;" id="reject-btn">Reject</button>
+    </div>
+    <button class="btn" id="close-modal" style="width:100%; margin-top:14px; background:none;">Close</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/config.js"></script>
+<script src="../assets/data.js"></script>
+<script src="../assets/admin-guard.js"></script>
+<script>
+let all = [];
+let activeId = null;
+const backdrop = document.getElementById('modal-backdrop');
+
+function row(r){
+  return `<tr>
+    <td>${r.name}<br><span style="color:var(--muted); font-size:.8rem;">${r.email}</span></td>
+    <td>${r.event_name}</td>
+    <td>${r.proposed_date ? new Date(r.proposed_date).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+    <td>${r.location || '—'}</td>
+    <td><span class="status-pill status-${r.status}">${r.status.replace('_',' ')}</span></td>
+    <td>${new Date(r.created_at).toLocaleDateString(undefined,{day:'numeric',month:'short'})}</td>
+    <td class="row-actions"><button onclick="openReq('${r.id}')">Review</button></td>
+  </tr>`;
+}
+
+function openReq(id){
+  activeId = id;
+  const r = all.find(x => x.id === id);
+  document.getElementById('modal-title').textContent = r.event_name;
+  document.getElementById('req-detail').innerHTML = `
+    <p><strong>Requester:</strong> ${r.name} (${r.email}) ${r.phone || ''}</p>
+    <p><strong>Organizer/Club:</strong> ${r.organizer || '—'}</p>
+    <p><strong>Proposed Date:</strong> ${r.proposed_date || '—'} &nbsp; <strong>Location:</strong> ${r.location || '—'} &nbsp; <strong>Distance:</strong> ${r.distance || '—'}</p>
+    <p><strong>Description:</strong><br>${r.description || '—'}</p>
+    ${r.social_link ? `<p><strong>Social:</strong> <a href="${r.social_link}" target="_blank">${r.social_link}</a></p>` : ''}
+    ${r.image ? `<img src="${r.image}" style="max-width:100%; border-radius:8px; margin-top:8px;">` : ''}
+  `;
+  document.getElementById('req-note').value = r.admin_note || '';
+  backdrop.style.display = 'flex';
+}
+window.openReq = openReq;
+
+document.getElementById('close-modal').addEventListener('click', () => backdrop.style.display = 'none');
+
+async function setReqStatus(status){
+  const note = document.getElementById('req-note').value;
+  await UnityData.updateRequest(activeId, { status, admin_note: note, requester_note: (status !== 'approved') ? note : null });
+
+  if (status === 'approved'){
+    const r = all.find(x => x.id === activeId);
+    const slug = r.event_name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    await UnityData.createEvent({
+      title: r.event_name, slug,
+      description: r.description, event_date: r.proposed_date || new Date().toISOString().slice(0,10),
+      location: r.location, distance: r.distance, category: r.distance,
+      cover_image: r.image, status: 'draft', featured: false,
+    });
+  }
+  backdrop.style.display = 'none';
+  load();
+}
+document.getElementById('approve-btn').addEventListener('click', () => setReqStatus('approved'));
+document.getElementById('reject-btn').addEventListener('click', () => setReqStatus('rejected'));
+document.getElementById('changes-btn').addEventListener('click', () => setReqStatus('changes_requested'));
+
+async function load(){
+  all = await UnityData.allRequests();
+  document.getElementById('rows').innerHTML = all.length ? all.map(row).join('') : `<tr><td colspan="7">No event requests yet.</td></tr>`;
+}
+
+(async () => {
+  const profile = await requireAdmin();
+  if (!profile) return;
+  renderAdminSidebar('requests');
+  await load();
+})();
+</script>
+</body>
+</html>

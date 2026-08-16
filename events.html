@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events | Unity Run Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="nav-root"></div>
+
+<main id="main" style="padding-top:120px;">
+  <div class="container">
+    <div class="section-head reveal in">
+      <div class="km">Events</div>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem);">Upcoming &amp; Past Events</h1>
+      <p style="color:var(--muted); max-width:56ch;">Every run we host, past and upcoming, in one place. Don't see one you'd like to join? <a href="suggest-event.html" style="color:var(--green); font-weight:600;">Suggest an event</a>.</p>
+    </div>
+
+    <div class="filter-row" id="filters">
+      <button class="chip active" data-filter="All">All</button>
+      <button class="chip" data-filter="5K">5K</button>
+      <button class="chip" data-filter="10K">10K</button>
+      <button class="chip" data-filter="Marathon">Marathon</button>
+      <button class="chip" data-filter="Community Run">Community Run</button>
+      <button class="chip" data-filter="Charity Run">Charity Run</button>
+    </div>
+
+    <h2 style="font-size:1.5rem;">Upcoming</h2>
+    <div id="upcoming-grid" class="grid grid-3 stagger" style="margin-bottom:64px;"></div>
+
+    <h2 style="font-size:1.5rem;">Past Events</h2>
+    <div id="past-grid" class="grid grid-3 stagger" style="margin-bottom:40px;"></div>
+  </div>
+</main>
+
+<div id="footer-root"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+renderNav('events');
+renderFooter();
+
+let currentFilter = 'All';
+
+function upcomingCard(ev){
+  return `<div class="event-card reveal in">
+    <div class="thumb"><img src="${ev.cover_image || 'https://images.unsplash.com/photo-1502904550040-7534597429ae?q=80&w=800'}" alt="${ev.title}" loading="lazy"><span class="badge">${ev.category || 'Run'}</span></div>
+    <div class="body">
+      <h3>${ev.title}</h3>
+      <div class="meta-row">
+        <span>📅 ${new Date(ev.event_date).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}</span>
+        <span>📍 ${ev.location || 'TBA'}</span>
+        <span>🏁 ${ev.distance || ''}</span>
+      </div>
+      <div class="card-actions">
+        <a class="btn btn-outline" style="color:var(--ink); border-color:var(--line);" href="events/event.html?slug=${ev.slug}">View Event</a>
+        <a class="btn btn-primary" href="${ev.registration_url || ('events/event.html?slug='+ev.slug)}" target="_blank" rel="noopener">Register</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pastCard(ev){
+  return `<div class="event-card reveal in">
+    <div class="thumb"><img src="${ev.cover_image || 'https://images.unsplash.com/photo-1502904550040-7534597429ae?q=80&w=800'}" alt="${ev.title}" loading="lazy"></div>
+    <div class="body">
+      <h3>${ev.title}</h3>
+      <div class="meta-row">
+        <span>📅 ${new Date(ev.event_date).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}</span>
+        <span>📍 ${ev.location || 'TBA'}</span>
+        ${ev.participants_count ? `<span>👥 ${ev.participants_count} runners</span>` : ''}
+      </div>
+      <div class="card-actions">
+        <a class="btn btn-outline" style="color:var(--ink); border-color:var(--line);" href="events/event.html?slug=${ev.slug}">View Photos</a>
+        ${ev.results_url ? `<a class="btn btn-dark" href="${ev.results_url}" target="_blank" rel="noopener">View Results</a>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+async function load(){
+  const [upcoming, past] = await Promise.all([
+    UnityData.publishedEvents({ upcomingOnly: true, category: currentFilter }),
+    UnityData.publishedEvents({ pastOnly: true, category: currentFilter }),
+  ]);
+  const up = document.getElementById('upcoming-grid');
+  const pg = document.getElementById('past-grid');
+  up.innerHTML = upcoming.length ? upcoming.map(upcomingCard).join('') :
+    `<div class="empty-state" style="grid-column:1/-1;"><h3>No upcoming ${currentFilter !== 'All' ? currentFilter+' ' : ''}events right now</h3><p>Check back soon, or suggest one yourself.</p><a href="suggest-event.html" class="btn btn-dark">Suggest an Event</a></div>`;
+  pg.innerHTML = past.length ? past.map(pastCard).join('') :
+    `<div class="empty-state" style="grid-column:1/-1;"><h3>No past events yet</h3><p>This is where race recaps, photos and results will live once we've run our first event.</p></div>`;
+}
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    load();
+  });
+});
+
+load();
+</script>
+</body>
+</html>
